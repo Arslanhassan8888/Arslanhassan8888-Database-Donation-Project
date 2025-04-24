@@ -13,7 +13,7 @@ It provides a menu interface for managing donor records including:
 """
 import re    # Regular expressions for date and Dob validation. it's Python’s built-in re module.
 from start.crud import view_all, add_entry, update_entry, delete_entry
-from start.tables import get_connection
+
 
 """
     Displays and manages the donor management menu.
@@ -53,7 +53,7 @@ def donor_menu():
 
         elif choice == "2":
             try:
-                print("\033[93mTip: Names must only include letters.\033[0m")
+                print("\033[93mTip: First Name and Last Name must include only letters.\033[0m")
                 fname = input("First Name: ").strip()
                 if not fname.replace(" ", "").isalpha():
                     print("\033[91mFirst name must contain only letters.\033[0m")
@@ -96,13 +96,20 @@ def donor_menu():
                 print(f"\033[91mError adding donor: {e}\033[0m")
 
         elif choice == "3":
+            print("\n\033[92mList of All Donors:\033[0m")
+            for donor in view_all("Donor"):
+                print(
+                    f"\033[92mID:\033[0m {donor[0]} "
+                    f"\033[92mFirst Name:\033[0m {donor[1]} "
+                    f"\033[92mLast Name:\033[0m {donor[2]}"
+                    )
             try:
-                print("\033[93mTip: You must enter a valid Donor ID to update.\033[0m")
+                print("\033[93mTip: Please enter the ID number of the donor you wish to update.\033[0m")
                 donor_id = input("Enter Donor ID to update: ").strip()
                 if not donor_id.isdigit():
                     print("\033[91mDonor ID must be numeric.\033[0m")
                     continue
-
+                print("\033[93mTip: First name and Last Name must only include letters.\033[0m")
                 fname = input("New First Name: ").strip()
                 if not fname.replace(" ", "").isalpha():
                     print("\033[91mFirst name must contain only letters.\033[0m")
@@ -115,12 +122,13 @@ def donor_menu():
                     continue
                 lname = lname.capitalize()
 
-                print("\033[93mTip: Enter a valid email (must include @ and .)\033[0m")
+                print("\033[93mTip: Use a valid email format, e.g., example@email.com\033[0m")
                 email = input("New Email: ").strip()
                 if "@" not in email or "." not in email:
                     print("\033[91mEmail must contain both '@' and '.'\033[0m")
                     continue
-
+                
+                print("\033[93mTip: Use only numbers, e.g., 07123456789.\033[0m")
                 phone = input("New Phone Number: ").strip()
                 if not phone.isdigit():
                     print("\033[91mPhone number must contain only digits.\033[0m")
@@ -145,6 +153,7 @@ def donor_menu():
 
         elif choice == "4":
             try:
+                print("\033[93mTip: Please enter the ID number of the donor you wish to update.\033[0m")
                 print("\033[93mTip: Deleting a donor will also delete all their donations.\033[0m")
                 donor_id = input("Enter Donor ID to delete: ").strip()
                 if not donor_id.isdigit():
