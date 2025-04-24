@@ -5,7 +5,6 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 # Import functions for database operations (viewing, adding, updating, deleting)
 from start.crud import view_all, add_entry, update_entry, delete_entry
 # Import function to connect to the database
-from start.tables import get_connection
 
 """
 This module handles all beneficiary-related operations in the donation system.
@@ -53,6 +52,7 @@ def beneficiary_menu():
                 # Call view_all function with "Beneficiary" table name
                 for b in view_all("Beneficiary"):
                     print(
+                        f"\033[92mID:\033[0m {b[0]} "
                         f"\033[92mName:\033[0m {b[1]} "
                         f"\033[92mType:\033[0m {b[2]} "
                         f"\033[92mAddress:\033[0m {b[3]} "
@@ -73,6 +73,7 @@ def beneficiary_menu():
                     continue     
                 name = name.capitalize()
 
+                print("\033[93mTip: Type should also include only letters (e.g., Charity, Non-Profit).\033[0m")
                 btype = input("Type (e.g., Charity, Non-Profit): ").strip()
                 if not btype.replace(" ", "").isalpha():
                     print("\033[91mType must contain only letters.\033[0m")
@@ -99,8 +100,18 @@ def beneficiary_menu():
 
        # Option 3: Update existing beneficiary
         elif choice == "3":
+            print("\n\033[92mAll Beneficiaries:\033[0m")
+            for b in view_all("Beneficiary"):
+                print(
+                    f"\033[92mID:\033[0m {b[0]} "
+                    f"\033[92mName:\033[0m {b[1]} "
+                    f"\033[92mType:\033[0m {b[2]} "
+                    f"\033[92mAddress:\033[0m {b[3]} "
+                    f"\033[92mSupport Duration:\033[0m {b[4]} "
+                    f"\033[92mFunding Priority:\033[0m {b[5]}"
+                )
             try:
-                print("\033[93mTip: Make sure to enter the correct Beneficiary ID you want to update.\033[0m")
+                print("\n\033[93mTip: Please enter the ID of Beneficiary you wish to update.\033[0m\n")
                 bid = input("Enter Beneficiary ID to update: ").strip()
                 if not bid.isdigit():
                     print("\033[91mBeneficiary ID must be a number.\033[0m")
@@ -112,14 +123,17 @@ def beneficiary_menu():
                     print("\033[91mName must contain only letters.\033[0m")
                     continue
                 name = name.capitalize()
-
+                
+                print("\033[93mTip: Type should include only letters (e.g., Charity).\033[0m")
                 btype = input("New Type: ").strip()
                 if not btype.replace(" ", "").isalpha():
                     print("\033[91mType must contain only letters.\033[0m")
                     continue
 
-                print("\033[93mTip: Fill in updated address and duration details.\033[0m")
+                print("\033[93mTip: Update the address if needed.\033[0m")
                 address = input("New Address: ").strip()
+                
+                print("\033[93mTip: Duration can be '3 years', 'Ongoing', etc.\033[0m")
                 duration = input("New Duration: ").strip()
 
                 print("\033[93mTip: Enter High, Medium, or Low for new priority.\033[0m")
@@ -138,8 +152,19 @@ def beneficiary_menu():
 
         # option 4 :Delete a beneficiary
         elif choice == "4":
+            print("\n\033[92mAll Beneficiaries:\033[0m")
+            for b in view_all("Beneficiary"):
+                print(
+                    f"\033[92mID:\033[0m {b[0]} "
+                    f"\033[92mName:\033[0m {b[1]} "
+                    f"\033[92mType:\033[0m {b[2]} "
+                    f"\033[92mAddress:\033[0m {b[3]} "
+                    f"\033[92mSupport Duration:\033[0m {b[4]} "
+                    f"\033[92mFunding Priority:\033[0m {b[5]}"
+                )
             try:
-                print("\033[93mTip: Deleting a beneficiary will also remove any donations linked to them.\033[0m")
+                print("\n\033[93mTip: Please enter the ID of Beneficiary you wish to delete.\033[0m")
+                print("\033[93mTip: Deleting a beneficiary will also remove all linked donations.\033[0m\n")
                 bid = input("Enter Beneficiary ID to delete: ").strip()
                 if not bid.isdigit():
                     print("\033[91mBeneficiary ID must be a number.\033[0m")

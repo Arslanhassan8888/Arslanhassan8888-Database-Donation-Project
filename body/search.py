@@ -2,6 +2,7 @@
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 """
 This module provides search functionality across the donation system.
 It allows users to find records based on relationships between entities:
@@ -11,21 +12,44 @@ It allows users to find records based on relationships between entities:
 
 from start.tables import get_connection
 
-# This helper function runs a SQL query and returns all matching results
-# No changes needed here for cascade functionality, but added comment for clarity
-
 def fetch_all(query, param):
-    conn = get_connection()  # Establish database connection
-    cursor = conn.cursor()   # Create cursor for executing SQL
-    cursor.execute(query, (param,))  # Execute query with parameter
-    results = cursor.fetchall()      # Get all matching records
-    conn.close()            # Close connection
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute(query, (param,))
+    results = cursor.fetchall()
+    conn.close()
+    return results
+
+def fetch_all_donations():
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM Donation")
+    results = cursor.fetchall()
+    conn.close()
     return results
 
 def search_menu():
     while True:
-        # Display search options with green header
         print("\n\033[92m--- Search Menu ---\033[0m", flush=True)
+
+        print("\n\033[93mHere are all donations available in the system:\033[0m")
+        donations = fetch_all_donations()
+        if donations:
+            for d in donations:
+                print(
+                    f"\033[92mID:\033[0m {d[0]}, "
+                    f"\033[92mAmount:\033[0m £{d[1]:,.2f}, "
+                    f"\033[92mDate:\033[0m {d[2]}, "
+                    f"\033[92mNotes:\033[0m {d[3]}, "
+                    f"\033[92mDonor ID:\033[0m {d[4]}, "
+                    f"\033[92mBeneficiary ID:\033[0m {d[5]}, "
+                    f"\033[92mEvent ID:\033[0m {d[6]}, "
+                    f"\033[92mVolunteer ID:\033[0m {d[7]}"
+                )
+        else:
+            print("\033[93mNo donations available in the database.\033[0m")
+
+        print("\n\033[92mChoose what to search by:\033[0m")
         print("1. Search Donations by Donor")
         print("2. Search Donations by Volunteer")
         print("3. Search Donations by Event")
@@ -33,32 +57,24 @@ def search_menu():
         print("5. Search Donations by Beneficiary")
         print("6. Back to Main Menu")
 
-        # Get and validate user choice
         choice = input("\033[92mChoose an option (1-6): \033[0m").strip()
         if not choice.isdigit() or choice not in ["1", "2", "3", "4", "5", "6"]:
             print("\033[91mInvalid option. Please choose a number between 1 and 6.\033[0m")
             continue
 
-        # Option 1: Search donations by donor
         if choice == "1":
-            search_donations("Donor", "Donor_ID")
-
-        # Option 2: Search donations by volunteer
+            search_donations("Donor", "Donor_ID", exclude=["Beneficiary_ID", "Event_ID", "Volunteer_ID"])
         elif choice == "2":
-            search_donations("Volunteer", "Volunteer_ID")
-
-        # Option 3: Search donations by event
+            search_donations("Volunteer", "Volunteer_ID", exclude=["Donor_ID", "Beneficiary_ID", "Event_ID"])
         elif choice == "3":
-            search_donations("Event", "Event_ID")
-
-        # Option 4: Search events by volunteer participation
+            search_donations("Event", "Event_ID", exclude=["Donor_ID", "Beneficiary_ID", "Volunteer_ID"])
         elif choice == "4":
+            print("\n\033[93mTip: Volunteer ID must be numeric.\033[0m")
             volunteer_id = input("Enter Volunteer ID: ").strip()
             if not volunteer_id.isdigit():
                 print("\033[91mVolunteer ID must be numeric.\033[0m")
                 continue
 
-            # Query to find events a volunteer is associated with
             query = """
                 SELECT e.* FROM Event e
                 JOIN Volunteer v ON e.Event_ID = v.Event_ID
@@ -66,11 +82,11 @@ def search_menu():
             """
             events = fetch_all(query, volunteer_id)
 
-            # Display results
             print("\n\033[92mEvents this volunteer is involved in:\033[0m")
             if events:
                 for e in events:
                     print(
+                        f"\033[92mID:\033[0m {e[0]}, "
                         f"\033[92mName:\033[0m {e[1]}, "
                         f"\033[92mDate:\033[0m {e[2]}, "
                         f"\033[92mLocation:\033[0m {e[3]}, "
@@ -79,23 +95,14 @@ def search_menu():
                     )
             else:
                 print("\033[91mNo events found for this volunteer.\033[0m")
-
-        # Option 5: Search donations by beneficiary
         elif choice == "5":
-            search_donations("Beneficiary", "Beneficiary_ID")
-
-        # Option 6: Exit to main menu
+            search_donations("Beneficiary", "Beneficiary_ID", exclude=["Donor_ID", "Event_ID", "Volunteer_ID"])
         elif choice == "6":
             break
 
-"""
-Generic function to search donations by related entity.
-Parameters:
-    entity_name - Human-readable name (Donor/Volunteer/etc)
-    column - Database column to search against
-No changes required here either. Cascade deletions remove irrelevant records, so only valid results will show.
-"""
-def search_donations(entity_name, column):
+def search_donations(entity_name, column, exclude=None):
+    exclude = exclude or []
+    print(f"\n\033[93mTip: Enter a valid numeric ID for the selected {entity_name.lower()}\033[0m")
     entity_id = input(f"Enter {entity_name} ID: ").strip()
     if not entity_id.isdigit():
         print(f"\033[91m{entity_name} ID must be numeric.\033[0m")
@@ -109,12 +116,21 @@ def search_donations(entity_name, column):
     print(f"\n\033[92mDonations related to this {entity_name.lower()}:\033[0m")
     if donations:
         for d in donations:
-            print(
-                f"\033[92mID:\033[0m {d[0]}, "
-                f"\033[92mAmount:\033[0m £{d[1]:,.2f}, "
-                f"\033[92mDate:\033[0m {d[2]}, "
+            output = [
+                f"\033[92mID:\033[0m {d[0]}",
+                f"\033[92mAmount:\033[0m £{d[1]:,.2f}",
+                f"\033[92mDate:\033[0m {d[2]}",
                 f"\033[92mNotes:\033[0m {d[3]}"
-            )
+            ]
+            if "Donor_ID" not in exclude:
+                output.append(f"\033[92mDonor ID:\033[0m {d[4]}")
+            if "Beneficiary_ID" not in exclude:
+                output.append(f"\033[92mBeneficiary ID:\033[0m {d[5]}")
+            if "Event_ID" not in exclude:
+                output.append(f"\033[92mEvent ID:\033[0m {d[6]}")
+            if "Volunteer_ID" not in exclude:
+                output.append(f"\033[92mVolunteer ID:\033[0m {d[7]}")
+            print(", ".join(output))
     else:
         print(f"\033[91mNo donations found for this {entity_name.lower()}.\033[0m")
 

@@ -2,7 +2,7 @@
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-#In this page i used the same crud concept explained for beneficiary.py view, create,update and delete with minor changes
+
 """
 This module handles all volunteer-related operations in the donation system.
 It provides a menu interface for managing volunteer records including:
@@ -14,11 +14,9 @@ It provides a menu interface for managing volunteer records including:
 
 import re  # For date validation
 from start.crud import view_all, add_entry, update_entry, delete_entry
-from start.tables import get_connection
 
 def volunteer_menu():
     while True:
-        # Display menu options with green header
         print("\n\033[92m--- Volunteer Management ---\033[0m", flush=True)
         print("1. View All Volunteers")
         print("2. Add Volunteer")
@@ -28,12 +26,11 @@ def volunteer_menu():
         
         choice = input("\033[92mChoose an option (1-5): \033[0m").strip()
 
-        # Validate menu choice
         if not choice.isdigit() or choice not in ["1", "2", "3", "4", "5"]:
             print("\033[91mInvalid choice. Please choose a number between 1 and 5.\033[0m")
             continue
 
-        # Option 1: View all volunteers
+        # View all volunteers
         if choice == "1":
             try:
                 print("\n\033[92mAll Volunteers:\033[0m")
@@ -47,14 +44,17 @@ def volunteer_menu():
                             f"\033[92mName:\033[0m {v[1]} {v[2]} "
                             f"\033[92mEmail:\033[0m {v[3]} "
                             f"\033[92mPhone:\033[0m {v[4]} "
+                            f"\033[92mAddress:\033[0m {v[5]} "
+                            f"\033[92mDOB:\033[0m {v[6]} "
                             f"\033[92mEvent ID:\033[0m {v[7]}"
                         )
             except Exception as e:
                 print(f"\033[91mError viewing volunteers: {str(e)}\033[0m")
 
-        # Option 2: Add new volunteer
+        # Add new volunteer
         elif choice == "2":
             try:
+                print("\n\033[93mTip: First and Last names must only include letters.\033[0m")
                 fname = input("First Name: ").strip()
                 if not fname.replace(" ", "").isalpha():
                     print("\033[91mFirst name must contain only letters.\033[0m")
@@ -67,23 +67,28 @@ def volunteer_menu():
                     continue
                 lname = lname.capitalize()
 
+                print("\033[93mTip: Use a valid email address (e.g., example@email.com).\033[0m")
                 email = input("Email: ").strip()
                 if "@" not in email or "." not in email:
                     print("\033[91mPlease enter a valid email address.\033[0m")
                     continue
 
+                print("\033[93mTip: Use only numbers for the phone, e.g., 07123456789.\033[0m")
                 phone = input("Phone Number: ").strip()
                 if not phone.isdigit():
                     print("\033[91mPhone number must contain only digits.\033[0m")
                     continue
 
+                print("\033[93mTip: Address can be left blank but it's recommended.\033[0m")
                 address = input("Address: ").strip()
 
+                print("\033[93mTip: Use format YYYY-MM-DD for date of birth.\033[0m")
                 dob = input("Date of Birth (YYYY-MM-DD): ").strip()
                 if not re.match(r"^\d{4}-\d{2}-\d{2}$", dob):
                     print("\033[91mDOB must be in format YYYY-MM-DD using only numbers.\033[0m")
                     continue
 
+                print("\033[93mTip: Enter a valid Event ID from the Events menu.\033[0m")
                 event_id = input("Event ID: ").strip()
                 if not event_id.isdigit():
                     print("\033[91mEvent ID must be a number.\033[0m")
@@ -97,13 +102,28 @@ def volunteer_menu():
             except Exception as e:
                 print(f"\033[91mError adding volunteer: {str(e)}\033[0m")
 
+        # Update volunteer
         elif choice == "3":
+            print("\n\033[92mAll Volunteers:\033[0m")
+            volunteers = view_all("Volunteer")
+            for v in volunteers:
+                print(
+                    f"\033[92mVolunteer ID:\033[0m {v[0]} "
+                    f"\033[92mName:\033[0m {v[1]} {v[2]} "
+                    f"\033[92mEmail:\033[0m {v[3]} "
+                    f"\033[92mPhone:\033[0m {v[4]} "
+                    f"\033[92mAddress:\033[0m {v[5]} "
+                    f"\033[92mDOB:\033[0m {v[6]} "
+                    f"\033[92mEvent ID:\033[0m {v[7]}"
+                )
             try:
+                print("\n\033[93mTip: Enter the Volunteer ID you want to update.\033[0m")
                 vid = input("Enter Volunteer ID to update: ").strip()
                 if not vid.isdigit():
                     print("\033[91mVolunteer ID must be a number.\033[0m")
                     continue
 
+                print("\033[93mTip: First and Last names must only include letters.\033[0m")
                 fname = input("First Name: ").strip()
                 if not fname.replace(" ", "").isalpha():
                     print("\033[91mFirst name must contain only letters.\033[0m")
@@ -116,23 +136,28 @@ def volunteer_menu():
                     continue
                 lname = lname.capitalize()
 
+                print("\033[93mTip: Use a valid email address (e.g., name@email.com).\033[0m")
                 email = input("Email: ").strip()
                 if "@" not in email or "." not in email:
                     print("\033[91mPlease enter a valid email address.\033[0m")
                     continue
 
+                print("\033[93mTip: Phone number must be digits only.\033[0m")
                 phone = input("Phone Number: ").strip()
                 if not phone.isdigit():
                     print("\033[91mPhone number must contain only digits.\033[0m")
                     continue
 
+                print("\033[93mTip: Leave blank if no address change is needed.\033[0m")
                 address = input("Address: ").strip()
 
+                print("\033[93mTip: Use format YYYY-MM-DD for date of birth.\033[0m")
                 dob = input("New Date of Birth (YYYY-MM-DD): ").strip()
                 if not re.match(r"^\d{4}-\d{2}-\d{2}$", dob):
                     print("\033[91mDOB must be in format YYYY-MM-DD using only numbers.\033[0m")
                     continue
 
+                print("\033[93mTip: Enter the updated Event ID.\033[0m")
                 event_id = input("Event ID: ").strip()
                 if not event_id.isdigit():
                     print("\033[91mEvent ID must be a number.\033[0m")
@@ -146,9 +171,23 @@ def volunteer_menu():
             except Exception as e:
                 print(f"\033[91mError updating volunteer: {str(e)}\033[0m")
 
-        # Option 4: Delete volunteer
+        # Delete volunteer
         elif choice == "4":
+            print("\n\033[92mAll Volunteers:\033[0m")
+            volunteers = view_all("Volunteer")
+            for v in volunteers:
+                print(
+                    f"\033[92mVolunteer ID:\033[0m {v[0]} "
+                    f"\033[92mName:\033[0m {v[1]} {v[2]} "
+                    f"\033[92mEmail:\033[0m {v[3]} "
+                    f"\033[92mPhone:\033[0m {v[4]} "
+                    f"\033[92mAddress:\033[0m {v[5]} "
+                    f"\033[92mDOB:\033[0m {v[6]} "
+                    f"\033[92mEvent ID:\033[0m {v[7]}"
+                )
             try:
+                print("\n\033[93mTip: Enter the Volunteer ID you want to delete.\033[0m")
+                print("\033[93mTip: Deleting a volunteer will also delete any linked donations.\033[0m\n")
                 vid = input("Enter Volunteer ID to delete: ").strip()
                 if not vid.isdigit():
                     print("\033[91mVolunteer ID must be a number.\033[0m")
@@ -159,7 +198,6 @@ def volunteer_menu():
             except Exception as e:
                 print(f"\033[91mError deleting volunteer: {str(e)}\033[0m")
 
-        # Option 5: Exit
         elif choice == "5":
             break
 

@@ -53,7 +53,7 @@ def donor_menu():
 
         elif choice == "2":
             try:
-                print("\033[93mTip: First Name and Last Name must include only letters.\033[0m")
+                print("\n\033[93mTip: First Name and Last Name must include only letters.\033[0m\n")
                 fname = input("First Name: ").strip()
                 if not fname.replace(" ", "").isalpha():
                     print("\033[91mFirst name must contain only letters.\033[0m")
@@ -102,9 +102,13 @@ def donor_menu():
                     f"\033[92mID:\033[0m {donor[0]} "
                     f"\033[92mFirst Name:\033[0m {donor[1]} "
                     f"\033[92mLast Name:\033[0m {donor[2]}"
+                    f"\033[92mEmail:\033[0m {donor[3]} "
+                    f"\033[92mPhone:\033[0m {donor[4]} "
+                    f"\033[92mAddress:\033[0m {donor[5]} "
+                    f"\033[92mDOB:\033[0m {donor[6]}"
                     )
             try:
-                print("\033[93mTip: Please enter the ID number of the donor you wish to update.\033[0m")
+                print("\n\033[93mTip: Please enter the ID number of the donor you wish to update.\033[0m")
                 donor_id = input("Enter Donor ID to update: ").strip()
                 if not donor_id.isdigit():
                     print("\033[91mDonor ID must be numeric.\033[0m")
@@ -158,10 +162,14 @@ def donor_menu():
                     f"\033[92mID:\033[0m {donor[0]} "
                     f"\033[92mFirst Name:\033[0m {donor[1]} "
                     f"\033[92mLast Name:\033[0m {donor[2]}"
+                    f"\033[92mEmail:\033[0m {donor[3]} "
+                    f"\033[92mPhone:\033[0m {donor[4]} "
+                    f"\033[92mAddress:\033[0m {donor[5]} "
+                    f"\033[92mDOB:\033[0m {donor[6]}"
                     )
             try:
-                print("\033[93mTip: Please enter the ID number of the donor you wish to update.\033[0m")
-                print("\033[93mTip: Deleting a donor will also delete all their donations.\033[0m")
+                print("\n\033[93mTip: Please enter the ID number of the donor you wish to delete.\033[0m")
+                print("\033[93mTip: Deleting a donor will also delete all their donations.\033[0m\n")
                 donor_id = input("Enter Donor ID to delete: ").strip()
                 if not donor_id.isdigit():
                     print("\033[91mDonor ID must be numeric.\033[0m")
