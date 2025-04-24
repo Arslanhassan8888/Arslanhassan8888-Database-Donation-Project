@@ -1,4 +1,7 @@
 # event.py
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 """
 This module handles all event-related operations in the donation system.
 It provides a menu interface for managing fundraising events including:

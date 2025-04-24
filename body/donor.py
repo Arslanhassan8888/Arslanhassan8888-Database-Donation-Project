@@ -1,4 +1,7 @@
 # donor.py
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 #In this page i used the same crud concept explained for beneficiary.py view, create,update and delete with minor changes
 """
 This module handles all donor-related operations in the donation system.

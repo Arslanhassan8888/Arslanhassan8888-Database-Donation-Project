@@ -1,4 +1,7 @@
 # search.py
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 """
 This module provides search functionality across the donation system.
 It allows users to find records based on relationships between entities:

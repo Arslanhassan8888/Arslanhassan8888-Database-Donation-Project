@@ -1,4 +1,7 @@
 # beneficiary.py
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 # Import functions for database operations (viewing, adding, updating, deleting)
 from start.crud import view_all, add_entry, update_entry, delete_entry
 # Import function to connect to the database
