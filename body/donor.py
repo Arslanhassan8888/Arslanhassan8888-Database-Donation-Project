@@ -152,6 +152,13 @@ def donor_menu():
                 print(f"\033[91mError updating donor: {e}\033[0m")
 
         elif choice == "4":
+            print("\n\033[92mList of All Donors:\033[0m")
+            for donor in view_all("Donor"):
+                print(
+                    f"\033[92mID:\033[0m {donor[0]} "
+                    f"\033[92mFirst Name:\033[0m {donor[1]} "
+                    f"\033[92mLast Name:\033[0m {donor[2]}"
+                    )
             try:
                 print("\033[93mTip: Please enter the ID number of the donor you wish to update.\033[0m")
                 print("\033[93mTip: Deleting a donor will also delete all their donations.\033[0m")
