@@ -154,3 +154,4 @@ def beneficiary_menu():
 # If this file is run directly (not imported), run the menu
 if __name__ == "__main__":
     beneficiary_menu()
+    
