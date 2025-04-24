@@ -101,7 +101,7 @@ def donor_menu():
                 print(
                     f"\033[92mID:\033[0m {donor[0]} "
                     f"\033[92mFirst Name:\033[0m {donor[1]} "
-                    f"\033[92mLast Name:\033[0m {donor[2]}"
+                    f"\033[92mLast Name:\033[0m {donor[2]} "
                     f"\033[92mEmail:\033[0m {donor[3]} "
                     f"\033[92mPhone:\033[0m {donor[4]} "
                     f"\033[92mAddress:\033[0m {donor[5]} "
@@ -161,7 +161,7 @@ def donor_menu():
                 print(
                     f"\033[92mID:\033[0m {donor[0]} "
                     f"\033[92mFirst Name:\033[0m {donor[1]} "
-                    f"\033[92mLast Name:\033[0m {donor[2]}"
+                    f"\033[92mLast Name:\033[0m {donor[2]} "
                     f"\033[92mEmail:\033[0m {donor[3]} "
                     f"\033[92mPhone:\033[0m {donor[4]} "
                     f"\033[92mAddress:\033[0m {donor[5]} "
