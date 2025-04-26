@@ -49,10 +49,8 @@ def insert_sample_data():
     cursor.execute("INSERT INTO Donation (Amount, Date, Notes, Donor_ID, Event_ID, Business_ID, Beneficiary_ID) VALUES (500.0, '2025-11-01', 'John donates to Children Foundation', 1, NULL, NULL, 1)")
     cursor.execute("INSERT INTO Donation (Amount, Date, Notes, Donor_ID, Event_ID, Business_ID, Beneficiary_ID) VALUES (350.0, '2025-11-03', 'John donates to Elderly Support', 1, NULL, NULL, 2)")
     cursor.execute("INSERT INTO Donation (Amount, Date, Notes, Donor_ID, Event_ID, Business_ID, Beneficiary_ID) VALUES (200.0, '2025-11-05', 'Jane donates to Animal Shelter', 2, NULL, NULL, 3)")
-
     cursor.execute("INSERT INTO Donation (Amount, Date, Notes, Donor_ID, Event_ID, Business_ID, Beneficiary_ID) VALUES (1000.0, '2025-12-20', 'Event Gala Dinner for Environmental Fund', NULL, 1, NULL, 4)")
     cursor.execute("INSERT INTO Donation (Amount, Date, Notes, Donor_ID, Event_ID, Business_ID, Beneficiary_ID) VALUES (800.0, '2025-11-22', 'Event Marathon Run for Elderly Support', NULL, 2, NULL, 2)")
-
     cursor.execute("INSERT INTO Donation (Amount, Date, Notes, Donor_ID, Event_ID, Business_ID, Beneficiary_ID) VALUES (750.0, '2025-12-01', 'TechCorp donates to Children Foundation', NULL, NULL, 1, 1)")
     cursor.execute("INSERT INTO Donation (Amount, Date, Notes, Donor_ID, Event_ID, Business_ID, Beneficiary_ID) VALUES (600.0, '2025-11-18', 'GreenEnergy donation to Environmental Fund', NULL, NULL, 2, 4)")
 
