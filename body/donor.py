@@ -15,7 +15,6 @@ It provides a menu interface for managing donor records including:
 
 import re  # Regular expressions for date and DOB validation
 from start.crud import view_all, add_entry, update_entry, delete_entry, has_linked_donations
-
 def donor_menu():
 
     while True:
