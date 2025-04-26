@@ -72,7 +72,7 @@ Parameters:
 Returns:
      True if linked donations exist, False otherwise
 """
-def has_linked_donations(column, id):
+def linked_donations(column, id):
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(f"SELECT 1 FROM Donation WHERE {column} = ?", (id,))

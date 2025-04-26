@@ -14,7 +14,7 @@ It provides a menu interface for managing donor records including:
 """
 
 import re  # Regular expressions for date and DOB validation
-from start.crud import view_all, add_entry, update_entry, delete_entry, has_linked_donations
+from start.crud import view_all, add_entry, update_entry, delete_entry, linked_donations
 def donor_menu():
 
     while True:
@@ -28,7 +28,7 @@ def donor_menu():
         print("5️⃣  🔙 Back to Main Menu")
         print("-" * 60)
 
-        choice = input("\n🌟 Choose an option (1-5): ").strip()
+        choice = input("\n Choose an option (1-5): ").strip()
 
         # Validate menu choice
         if not choice.isdigit() or choice not in ["1", "2", "3", "4", "5"]:
@@ -176,7 +176,7 @@ def donor_menu():
                     print("\033[91m🚫 Donor ID must be numeric.\033[0m")
                     continue
 
-                if has_linked_donations("Donor_ID", donor_id):
+                if linked_donations("Donor_ID", donor_id):
                     print("\033[91m🚫 Cannot delete Donor linked to existing Donations.\033[0m")
                     continue
 

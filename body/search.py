@@ -41,7 +41,7 @@ def search_menu():
         print("5️⃣  🔙 Back to Main Menu")
         print("-" * 60)
 
-        choice = input("\n🌟 Choose an option (1-5): ").strip()
+        choice = input("\n Choose an option (1-5): ").strip()
 
         if not choice.isdigit() or choice not in ["1", "2", "3", "4", "5"]:
             print("\033[91m🚫 Invalid option. Please choose a number between 1 and 5.\033[0m")

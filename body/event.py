@@ -12,7 +12,7 @@ It provides a menu interface for managing fundraising events including:
 - Deleting events (with donation checks)
 """
 
-from start.crud import view_all, add_entry, update_entry, delete_entry, has_linked_donations
+from start.crud import view_all, add_entry, update_entry, delete_entry, linked_donations
 import re
 def event_menu():
     """
@@ -31,7 +31,7 @@ def event_menu():
         print("5️⃣  🔙 Back to Main Menu")
         print("-" * 60)
 
-        choice = input("\n🌟 Choose an option (1-5): ").strip()
+        choice = input("\n Choose an option (1-5): ").strip()
 
         if not choice.isdigit() or choice not in ["1", "2", "3", "4", "5"]:
             print("\033[91m🚫 Invalid choice. Please choose a number between 1 and 5.\033[0m")
@@ -170,7 +170,7 @@ def event_menu():
                     print("\033[91m🚫 Event ID must be a number.\033[0m")
                     continue
 
-                if has_linked_donations("Event_ID", event_id):
+                if linked_donations("Event_ID", event_id):
                     print("\033[91m🚫 Cannot delete Event linked to existing Donations.\033[0m")
                     continue
 

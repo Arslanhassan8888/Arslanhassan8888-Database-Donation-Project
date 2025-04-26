@@ -1,14 +1,12 @@
 # menu.py
 
 """
-🌟 This is the main entry point for the Donation Management System. 🌟
+This is the main entry point for the Donation Management System.
 It provides the top-level menu that connects all system components.
 The menu coordinates between different management modules and handles
 the initial database setup.
-
-UPDATED:
-✨ Added a beautiful welcoming banner with stars, dots, and emojis!
 """
+
 from start.tables import create_tables
 from start.values import insert_sample_data
 from body.donor import donor_menu
@@ -25,9 +23,8 @@ def main_menu():
 
     while True:
         # Display main application header and options
-        print("\n" + "✨" * 60)
-        print("🌟  WELCOME TO ARSLAN'S DONATION MANAGEMENT SYSTEM  🌟".center(60))
-        print("✨" * 60)
+        
+        print("\n\033[92m/ WELCOME TO ARSLAN'S DONATION MANAGEMENT SYSTEM  /\033[0m")
         print("\n" + "-" * 60)
         print("🏠  Main Menu:")
         print("-" * 60)
@@ -41,7 +38,7 @@ def main_menu():
         print("-" * 60)
 
         # Get user's menu choice
-        choice = input("\n🌟 Enter your choice (1-7): ").strip()
+        choice = input("\n Enter your choice (1-7): ").strip()
 
         # Validate input is a number between 1-7
         if not choice.isdigit() or choice not in ["1", "2", "3", "4", "5", "6", "7"]:
@@ -63,9 +60,8 @@ def main_menu():
             case "6":
                 search_menu()
             case "7":
-                print("\n" + "✨" * 60)
-                print("🎉 THANK YOU for using Arslan's Donation App! Goodbye! 🎉".center(60))
-                print("✨" * 60 + "\n")
+                print("\033[92m🎉 THANK YOU for using Arslan's Donation App! Goodbye! 🎉\033[0m")
+
                 break
 
 # Allow running this module directly
