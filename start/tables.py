@@ -29,8 +29,8 @@ def create_tables():
     Create the Donor table.
     NOT NULL constraints ensure that all fields are filled in.
     unique constraints ensure that no two donors can have the same email or phone number.
-    
     */
+    
     CREATE TABLE Donor (
         Donor_ID INTEGER PRIMARY KEY AUTOINCREMENT,
         First_Name TEXT NOT NULL,
