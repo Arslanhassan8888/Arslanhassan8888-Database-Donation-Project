@@ -14,7 +14,6 @@ It provides a menu interface for managing donation records including:
 
 import re
 from start.crud import view_all, add_entry, update_entry, delete_entry
-
 def donation_menu():
 
     while True:
