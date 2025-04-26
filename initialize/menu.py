@@ -9,7 +9,6 @@ the initial database setup.
 UPDATED:
 ✨ Added a beautiful welcoming banner with stars, dots, and emojis!
 """
-
 from start.tables import create_tables
 from start.values import insert_sample_data
 from body.donor import donor_menu
