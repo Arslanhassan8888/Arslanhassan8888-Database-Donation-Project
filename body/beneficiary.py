@@ -14,7 +14,7 @@ It provides a menu interface for managing beneficiary records including:
 
 """
 
-from start.crud import view_all, add_entry, update_entry, delete_entry, has_linked_donations
+from start.crud import view_all, add_entry, update_entry, delete_entry, linked_donations
 
 def beneficiary_menu():
     """
@@ -34,7 +34,7 @@ def beneficiary_menu():
         print("-" * 60)
 
         # Ask user to choose an option
-        choice = input("\n🌟 Choose an option (1-5): ").strip()
+        choice = input("\n Choose an option (1-5): ").strip()
 
         # Validate input
         if not choice.isdigit() or choice not in ["1", "2", "3", "4", "5"]: 
@@ -179,7 +179,7 @@ def beneficiary_menu():
                     print("\033[91m🚫 Beneficiary ID must be numeric.\033[0m")
                     continue
 
-                if has_linked_donations("Beneficiary_ID", bid): # Check if the beneficiary has linked donations
+                if linked_donations("Beneficiary_ID", bid): # Check if the beneficiary has linked donations
                     # If yes, print an error message and continue to the next iteration of the loop
                     print("\033[91m🚫 Cannot delete Beneficiary linked to existing Donations.\033[0m")
                     continue

@@ -13,7 +13,7 @@ It provides a menu interface for managing business records including:
 """
 
 import re  # For date validation
-from start.crud import view_all, add_entry, update_entry, delete_entry, has_linked_donations
+from start.crud import view_all, add_entry, update_entry, delete_entry, linked_donations
 
 def business_menu():
     """
@@ -34,7 +34,7 @@ def business_menu():
         print("5️⃣  🔙 Back to Main Menu")
         print("-" * 60)
 
-        choice = input("\n🌟 Choose an option (1-5): ").strip()
+        choice = input("\n Choose an option (1-5): ").strip()
 
         if not choice.isdigit() or choice not in ["1", "2", "3", "4", "5"]:
             print("\033[91m🚫 Invalid choice. Please choose a number between 1 and 5.\033[0m")
@@ -178,7 +178,7 @@ def business_menu():
                     print("\033[91m🚫 Business ID must be numeric.\033[0m")
                     continue
 
-                if has_linked_donations("Business_ID", business_id):
+                if linked_donations("Business_ID", business_id):
                     print("\033[91m🚫 Cannot delete Business linked to existing Donations.\033[0m")
                     continue
 
