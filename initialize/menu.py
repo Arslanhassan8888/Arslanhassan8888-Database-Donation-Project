@@ -10,7 +10,7 @@ from start.tables import create_tables
 from start.values import insert_sample_data
 from body.donor import donor_menu
 from body.event import event_menu
-from body.volunteer import volunteer_menu
+from body.business import volunteer_menu
 from body.beneficiary import beneficiary_menu
 from body.donation import donation_menu
 from body.search import search_menu
