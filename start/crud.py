@@ -3,7 +3,6 @@ This module contains basic CRUD (Create, Read, Update, Delete) operations
 for interacting with the database. These functions are used throughout
 the application to manage data in the SQLite database.
 """
-
 from start.tables import get_connection
 
 """
