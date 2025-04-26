@@ -21,7 +21,6 @@ def fetch_all(query, param):
     conn.close()
     return results 
 
-# Fetch all donations
 def fetch_all_donations(): # Fetch all donations from the database
     conn = get_connection()
     cursor = conn.cursor()
