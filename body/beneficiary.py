@@ -1,4 +1,4 @@
-# beneficiary.py
+# beneficiary.py 
 
 import sys # Importing sys for system-specific parameters and functions
 import os # Importing os for operating system dependent functionality
