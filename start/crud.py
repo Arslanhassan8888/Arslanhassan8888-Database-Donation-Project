@@ -2,80 +2,96 @@
 This module contains basic CRUD (Create, Read, Update, Delete) operations
 for interacting with the database. These functions are used throughout
 the application to manage data in the SQLite database.
+
+IMPORTANT: These functions assume all input validation has been done by the calling code.
+They focus solely on database operations and will propagate any database errors.
 """
+
 from start.tables import get_connection
 
+def _execute_operation(query, params=None, fetch=False):
+    """
+    Internal helper function to execute database operations.
+    Parameters:
+        query (str): SQL query to execute
+        params (tuple/None): Parameters for the query
+        fetch (bool): Whether to fetch results
+    Returns:
+        list: Results if fetch=True, None otherwise
+    Raises:
+        sqlite3.Error: For any database-related errors
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute(query, params or ())
+        if fetch:
+            return cursor.fetchall()
+        conn.commit()
+    finally:
+        conn.close()
+
 """
-This function retrieves all records from a specified database table.
+Retrieves all records from a specified table.
 Parameters:
-    table (str): The name of the table to query
+    table (str): Name of the table to query
 Returns:
-    list: All records from the table as a list of tuples
+    list: All records as list of tuples
+Raises:
+    sqlite3.Error: If table doesn't exist or query fails
 """
 def view_all(table):
-    conn = get_connection() # Establish connection to the database
-    cursor = conn.cursor() # Create a cursor object to execute SQL commands
-    cursor.execute(f"SELECT * FROM {table}") # Execute SQL query to select all records from the table
-    results = cursor.fetchall() # Fetch all results from the query
-    conn.close() # Always close the connection
-    return results
+    return _execute_operation(f"SELECT * FROM {table}", fetch=True)
 
 """
-This function adds a new record to the database.
+Adds a new record to the database.
 Parameters:
     query (str): SQL INSERT statement with placeholders
-    values (tuple): Values to insert into the placeholders
+    values (tuple): Values for the placeholders
+Raises:
+    sqlite3.Error: If insertion fails (constraint violation, etc.)
 """
 def add_entry(query, values):
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute(query, values) # Execute the insert query with provided values
-    conn.commit()
-    conn.close()
+    _execute_operation(query, values)
 
 """
-This function updates existing records in the database.
+Updates existing records in the database.
 Parameters:
     query (str): SQL UPDATE statement with placeholders
-    values (tuple): New values for the record including ID
-
-Note: The values tuple must include the record ID as the last element for the WHERE clause in the UPDATE statement
+    values (tuple): New values including ID for WHERE clause
+Raises:
+    sqlite3.Error: If update fails or record doesn't exist
 """
 def update_entry(query, values):
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute(query, values)
-    conn.commit()
-    conn.close()
+    _execute_operation(query, values)
 
 """
-This function deletes a record from the database.
-Parameters: 
+Deletes a record from the database.
+Parameters:
     query (str): SQL DELETE statement with placeholder
-    id (int/str): The ID of the record to delete
-
-UPDATED: With ON DELETE CASCADE enabled in table.py, this now automatically deletes related records
-(e.g., donations) without manual checks in the interface modules.
+    id (int/str): ID of the record to delete
+Raises:
+    sqlite3.Error: If deletion fails
+Note:
+    ON DELETE CASCADE in table.py handles related records automatically
 """
 def delete_entry(query, id):
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute(query, (id,)) # Execute delete with the provided ID
-    conn.commit()
-    conn.close()
+    _execute_operation(query, (id,))
 
 """
-This function checks if a record (Donor, Event, Business, Beneficiary) has linked donations.
+Checks if a record has linked donations.
 Parameters:
-    column (str): The column to check (e.g., 'Donor_ID', 'Event_ID', 'Business_ID', 'Beneficiary_ID')
-    id (int/str): The ID of the record to check
+    column (str): Column name to check (e.g., 'Donor_ID')
+    id (int/str): ID of the record to check
 Returns:
-     True if linked donations exist, False otherwise
+    bool: True if linked donations exist, False otherwise
+Raises:
+    sqlite3.Error: If query fails
 """
 def linked_donations(column, id):
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute(f"SELECT 1 FROM Donation WHERE {column} = ?", (id,))
-    result = cursor.fetchone()
-    conn.close()
-    return result is not None
+    result = _execute_operation(
+        f"SELECT 1 FROM Donation WHERE {column} = ?", 
+        (id,), 
+        fetch=True
+    )
+    return bool(result)
