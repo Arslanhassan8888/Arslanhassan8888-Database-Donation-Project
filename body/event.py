@@ -14,7 +14,6 @@ It provides a menu interface for managing fundraising events including:
 
 from start.crud import view_all, add_entry, update_entry, delete_entry, has_linked_donations
 import re
-
 def event_menu():
     """
     Displays and manages the event management menu.
