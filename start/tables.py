@@ -111,10 +111,10 @@ def create_tables():
         Event_ID INTEGER,
         Business_ID INTEGER,
         Beneficiary_ID INTEGER NOT NULL,
-        FOREIGN KEY(Donor_ID) REFERENCES Donor(Donor_ID) ON DELETE CASCADE,
-        FOREIGN KEY(Event_ID) REFERENCES Event(Event_ID) ON DELETE CASCADE,
-        FOREIGN KEY(Business_ID) REFERENCES Business(Business_ID) ON DELETE CASCADE,
-        FOREIGN KEY(Beneficiary_ID) REFERENCES Beneficiary(Beneficiary_ID) ON DELETE CASCADE
+        FOREIGN KEY(Donor_ID) REFERENCES Donor(Donor_ID),
+        FOREIGN KEY(Event_ID) REFERENCES Event(Event_ID),
+        FOREIGN KEY(Business_ID) REFERENCES Business(Business_ID),
+        FOREIGN KEY(Beneficiary_ID) REFERENCES Beneficiary(Beneficiary_ID)
     );
     """)
 

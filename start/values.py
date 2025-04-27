@@ -47,6 +47,7 @@ def insert_sample_data():
     cursor.execute("INSERT INTO Business (Name, Email, Phone_Number, Address, Registration_Date) VALUES ('EduWorld', 'hello@eduworld.com', '444444444', '101 Learning Blvd', '2021-08-20')")
 
     # Insert Volunteers
+    # Two volunteers linked to Event_ID 1
     cursor.execute("INSERT INTO Volunteer (Event_ID, First_Name, Last_Name, Address, Date_of_Birth, Contact_Number) VALUES (1, 'Alice', 'Brown', '12 Garden St', '1995-07-20', '5551112222')")
     cursor.execute("INSERT INTO Volunteer (Event_ID, First_Name, Last_Name, Address, Date_of_Birth, Contact_Number) VALUES (1, 'Bob', 'White', '34 River Rd', '1998-03-11', '5553334444')")
     cursor.execute("INSERT INTO Volunteer (Event_ID, First_Name, Last_Name, Address, Date_of_Birth, Contact_Number) VALUES (2, 'Charlie', 'Green', '56 Forest Ave', '1990-05-15', '5556667777')")

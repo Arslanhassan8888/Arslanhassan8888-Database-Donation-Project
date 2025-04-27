@@ -63,13 +63,13 @@ def search_menu():
                     continue
 
                 print("\n\033[92mHere are all Donors:\033[0m")
-                for d in donors:
-                    print(f"\033[92mDonor ID:\033[0m {d[0]} "
-                          f"\033[92mName:\033[0m {d[1]} {d[2]} "
-                          f"\033[92mEmail:\033[0m {d[3]} "
-                          f"\033[92mPhone:\033[0m {d[4]} "
-                          f"\033[92mAddress:\033[0m {d[5]} "
-                          f"\033[92mDOB:\033[0m {d[6]}")
+                for i in donors:
+                    print(f"\033[92mDonor ID:\033[0m {i[0]} "
+                          f"\033[92mName:\033[0m {i[1]} {i[2]} "
+                          f"\033[92mEmail:\033[0m {i[3]} "
+                          f"\033[92mPhone:\033[0m {i[4]} "
+                          f"\033[92mAddress:\033[0m {i[5]} "
+                          f"\033[92mDOB:\033[0m {i[6]}")
 
                 print("\n\033[93mTip: Insert a Donor ID to search donations.\033[0m")
                 donor_id = input("Enter Donor ID: ").strip()
@@ -90,14 +90,14 @@ def search_menu():
 
                 print("\n\033[92mDonations linked to this Donor:\033[0m")
                 if donations:
-                    for d in donations:
+                    for i in donations:
                         print(
-                            f"\033[92mID:\033[0m {d[0]}, "
-                            f"\033[92mAmount:\033[0m £{d[1]:,.2f}, "
-                            f"\033[92mDate:\033[0m {d[2]}, "
-                            f"\033[92mNotes:\033[0m {d[3]}, "
-                            f"\033[92mDonor:\033[0m {d[4]} {d[5]}, "
-                            f"\033[92mBeneficiary:\033[0m {d[6]}"
+                            f"\033[92mID:\033[0m {i[0]}, "
+                            f"\033[92mAmount:\033[0m £{i[1]:,.2f}, "
+                            f"\033[92mDate:\033[0m {i[2]}, "
+                            f"\033[92mNotes:\033[0m {i[3]}, "
+                            f"\033[92mDonor:\033[0m {i[4]} {i[5]}, "
+                            f"\033[92mBeneficiary:\033[0m {i[6]}"
                         )
                 else:
                     print("\033[93mNo donations found for this donor.\033[0m")
@@ -119,13 +119,13 @@ def search_menu():
                     continue
 
                 print("\n\033[92mHere are all Events:\033[0m")
-                for e in events:
-                    print(f"\033[92mEvent ID:\033[0m {e[0]} "
-                          f"\033[92mName:\033[0m {e[1]} "
-                          f"\033[92mDate:\033[0m {e[2]} "
-                          f"\033[92mLocation:\033[0m {e[3]} "
-                          f"\033[92mGoal:\033[0m £{e[4]:,.2f} "
-                          f"\033[92mDescription:\033[0m {e[5]}")
+                for i in events:
+                    print(f"\033[92mEvent ID:\033[0m {i[0]} "
+                          f"\033[92mName:\033[0m {i[1]} "
+                          f"\033[92mDate:\033[0m {i[2]} "
+                          f"\033[92mLocation:\033[0m {i[3]} "
+                          f"\033[92mGoal:\033[0m £{i[4]:,.2f} "
+                          f"\033[92mDescription:\033[0m {i[5]}")
 
                 print("\n\033[93mTip: Insert an Event ID to search donations.\033[0m")
                 event_id = input("Enter Event ID: ").strip()
@@ -146,14 +146,14 @@ def search_menu():
 
                 print("\n\033[92mDonations linked to this Event:\033[0m")
                 if donations:
-                    for d in donations:
+                    for i in donations:
                         print(
-                            f"\033[92mID:\033[0m {d[0]}, "
-                            f"\033[92mAmount:\033[0m £{d[1]:,.2f}, "
-                            f"\033[92mDate:\033[0m {d[2]}, "
-                            f"\033[92mNotes:\033[0m {d[3]}, "
-                            f"\033[92mEvent:\033[0m {d[4]}, "
-                            f"\033[92mBeneficiary:\033[0m {d[5]}"
+                            f"\033[92mID:\033[0m {i[0]}, "
+                            f"\033[92mAmount:\033[0m £{i[1]:,.2f}, "
+                            f"\033[92mDate:\033[0m {i[2]}, "
+                            f"\033[92mNotes:\033[0m {i[3]}, "
+                            f"\033[92mEvent:\033[0m {i[4]}, "
+                            f"\033[92mBeneficiary:\033[0m {i[5]}"
                         )
                 else:
                     print("\033[93mNo donations found for this event.\033[0m")
@@ -175,13 +175,13 @@ def search_menu():
                     continue
 
                 print("\n\033[92mHere are all Businesses:\033[0m")
-                for b in businesses:
-                    print(f"\033[92mBusiness ID:\033[0m {b[0]} "
-                          f"\033[92mName:\033[0m {b[1]} "
-                          f"\033[92mEmail:\033[0m {b[2]} "
-                          f"\033[92mPhone:\033[0m {b[3]} "
-                          f"\033[92mAddress:\033[0m {b[4]} "
-                          f"\033[92mRegistration Date:\033[0m {b[5]}")
+                for i in businesses:
+                    print(f"\033[92mBusiness ID:\033[0m {i[0]} "
+                          f"\033[92mName:\033[0m {i[1]} "
+                          f"\033[92mEmail:\033[0m {i[2]} "
+                          f"\033[92mPhone:\033[0m {i[3]} "
+                          f"\033[92mAddress:\033[0m {i[4]} "
+                          f"\033[92mRegistration Date:\033[0m {i[5]}")
 
                 print("\n\033[93mTip: Insert a Business ID to search donations.\033[0m")
                 business_id = input("Enter Business ID: ").strip()
@@ -202,14 +202,14 @@ def search_menu():
 
                 print("\n\033[92mDonations linked to this Business:\033[0m")
                 if donations:
-                    for d in donations:
+                    for i in donations:
                         print(
-                            f"\033[92mID:\033[0m {d[0]}, "
-                            f"\033[92mAmount:\033[0m £{d[1]:,.2f}, "
-                            f"\033[92mDate:\033[0m {d[2]}, "
-                            f"\033[92mNotes:\033[0m {d[3]}, "
-                            f"\033[92mBusiness:\033[0m {d[4]}, "
-                            f"\033[92mBeneficiary:\033[0m {d[5]}"
+                            f"\033[92mID:\033[0m {i[0]}, "
+                            f"\033[92mAmount:\033[0m £{i[1]:,.2f}, "
+                            f"\033[92mDate:\033[0m {i[2]}, "
+                            f"\033[92mNotes:\033[0m {i[3]}, "
+                            f"\033[92mBusiness:\033[0m {i[4]}, "
+                            f"\033[92mBeneficiary:\033[0m {i[5]}"
                         )
                 else:
                     print("\033[93mNo donations found for this business.\033[0m")
@@ -231,13 +231,13 @@ def search_menu():
                     continue
 
                 print("\n\033[92mHere are all Beneficiaries:\033[0m")
-                for b in beneficiaries:
-                    print(f"\033[92mBeneficiary ID:\033[0m {b[0]} "
-                          f"\033[92mName:\033[0m {b[1]} "
-                          f"\033[92mType:\033[0m {b[2]} "
-                          f"\033[92mAddress:\033[0m {b[3]} "
-                          f"\033[92mSupport Duration:\033[0m {b[4]} "
-                          f"\033[92mFunding Priority:\033[0m {b[5]}")
+                for i in beneficiaries:
+                    print(f"\033[92mBeneficiary ID:\033[0m {i[0]} "
+                          f"\033[92mName:\033[0m {i[1]} "
+                          f"\033[92mType:\033[0m {i[2]} "
+                          f"\033[92mAddress:\033[0m {i[3]} "
+                          f"\033[92mSupport Duration:\033[0m {i[4]} "
+                          f"\033[92mFunding Priority:\033[0m {i[5]}")
 
                 print("\n\033[93mTip: Insert a Beneficiary ID to search donations.\033[0m")
                 beneficiary_id = input("Enter Beneficiary ID: ").strip()
@@ -257,13 +257,13 @@ def search_menu():
 
                 print("\n\033[92mDonations linked to this Beneficiary:\033[0m")
                 if donations:
-                    for d in donations:
+                    for i in donations:
                         print(
-                            f"\033[92mID:\033[0m {d[0]}, "
-                            f"\033[92mAmount:\033[0m £{d[1]:,.2f}, "
-                            f"\033[92mDate:\033[0m {d[2]}, "
-                            f"\033[92mNotes:\033[0m {d[3]}, "
-                            f"\033[92mBeneficiary:\033[0m {d[4]}"
+                            f"\033[92mID:\033[0m {i[0]}, "
+                            f"\033[92mAmount:\033[0m £{i[1]:,.2f}, "
+                            f"\033[92mDate:\033[0m {i[2]}, "
+                            f"\033[92mNotes:\033[0m {i[3]}, "
+                            f"\033[92mBeneficiary:\033[0m {i[4]}"
                         )
                 else:
                     print("\033[93mNo donations found for this beneficiary.\033[0m")
@@ -291,14 +291,14 @@ def search_menu():
                     continue
 
                 print("\n\033[92mHere are all Volunteers:\033[0m")
-                for v in volunteers:
-                    print(f"\033[92mVolunteer ID:\033[0m {v[0]} "
-                          f"\033[92mName:\033[0m {v[1]} {v[2]} "
-                          f"\033[92mAddress:\033[0m {v[3]} "
-                          f"\033[92mDOB:\033[0m {v[4]} "
-                          f"\033[92mContact:\033[0m {v[5]} "
-                          f"\033[92mEvent ID:\033[0m {v[6]} "
-                          f"\033[92mEvent Name:\033[0m {v[7]}")
+                for i in volunteers:
+                    print(f"\033[92mVolunteer ID:\033[0m {i[0]} "
+                          f"\033[92mName:\033[0m {i[1]} {i[2]} "
+                          f"\033[92mAddress:\033[0m {i[3]} "
+                          f"\033[92mDOB:\033[0m {i[4]} "
+                          f"\033[92mContact:\033[0m {i[5]} "
+                          f"\033[92mEvent ID:\033[0m {i[6]} "
+                          f"\033[92mEvent Name:\033[0m {i[7]}")
 
                 print("\n\033[93mTip: Insert a Volunteer ID to search donations based on their event.\033[0m")
                 volunteer_id = input("Enter Volunteer ID: ").strip()
@@ -324,14 +324,14 @@ def search_menu():
 
                 print("\n\033[92mDonations linked to the Event where this Volunteer worked:\033[0m")
                 if donations:
-                    for d in donations:
+                    for i in donations:
                         print(
-                            f"\033[92mID:\033[0m {d[0]}, "
-                            f"\033[92mAmount:\033[0m £{d[1]:,.2f}, "
-                            f"\033[92mDate:\033[0m {d[2]}, "
-                            f"\033[92mNotes:\033[0m {d[3]}, "
-                            f"\033[92mEvent:\033[0m {d[4]}, "
-                            f"\033[92mBeneficiary:\033[0m {d[5]}"
+                            f"\033[92mID:\033[0m {i[0]}, "
+                            f"\033[92mAmount:\033[0m £{i[1]:,.2f}, "
+                            f"\033[92mDate:\033[0m {i[2]}, "
+                            f"\033[92mNotes:\033[0m {i[3]}, "
+                            f"\033[92mEvent:\033[0m {i[4]}, "
+                            f"\033[92mBeneficiary:\033[0m {i[5]}"
                         )
                 else:
                     print("\033[93mNo donations found linked to this volunteer's event.\033[0m")
