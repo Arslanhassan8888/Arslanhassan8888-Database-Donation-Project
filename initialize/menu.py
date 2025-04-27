@@ -1,10 +1,11 @@
 # menu.py
 
 """
-This is the main entry point for the Donation Management System.
+This is the main entry point for the Donation Management System. 
 It provides the top-level menu that connects all system components.
 The menu coordinates between different management modules and handles
 the initial database setup.
+
 """
 
 from start.tables import create_tables
@@ -15,6 +16,7 @@ from body.business import business_menu
 from body.beneficiary import beneficiary_menu
 from body.donation import donation_menu
 from body.search import search_menu
+from body.volunteer import volunteer_menu  
 
 def main_menu():
     # Initialize database with tables and sample data
@@ -33,16 +35,17 @@ def main_menu():
         print("3️⃣  Business Management")
         print("4️⃣  Beneficiary Management")
         print("5️⃣  Donation Management")
-        print("6️⃣  🔍 Search Records")
-        print("7️⃣  🚪 Exit")
+        print("6️⃣  Volunteer Management")  # ✨ New Volunteer Menu
+        print("7️⃣  🔍 Search Records")
+        print("8️⃣  🚪 Exit")
         print("-" * 60)
 
         # Get user's menu choice
-        choice = input("\n Enter your choice (1-7): ").strip()
+        choice = input("\n Enter your choice (1-8): ").strip()
 
-        # Validate input is a number between 1-7
-        if not choice.isdigit() or choice not in ["1", "2", "3", "4", "5", "6", "7"]:
-            print("\n🚫 Invalid choice. Please enter a number between 1 and 7.\n")
+        # Validate input is a number between 1-8
+        if not choice.isdigit() or choice not in ["1", "2", "3", "4", "5", "6", "7", "8"]:
+            print("\n🚫 Invalid choice. Please enter a number between 1 and 8.\n")
             continue
 
         # Route to the appropriate module based on user choice
@@ -58,10 +61,11 @@ def main_menu():
             case "5":
                 donation_menu()
             case "6":
-                search_menu()
+                volunteer_menu()  
             case "7":
+                search_menu()
+            case "8":
                 print("\033[92m🎉 THANK YOU for using Arslan's Donation App! Goodbye! 🎉\033[0m")
-
                 break
 
 # Allow running this module directly

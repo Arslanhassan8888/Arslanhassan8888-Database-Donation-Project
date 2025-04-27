@@ -3,11 +3,11 @@ from start.tables import get_connection
 
 """
 This module provides sample data for the donation management system.
-It contains a single function that insert values in all database tables that can be used for testing and demonstration.
+It contains a single function that inserts values in all database tables that can be used for testing and demonstration.
 Clears all existing data and inserts fresh sample records into all tables.
 The data represents a typical set of records for a charity organization.
 
-UPDATED: With correct Business columns and correct Donation relationships.
+UPDATED: With correct Business columns, Volunteer table, and correct Donation relationships.
 """
 
 def insert_sample_data():
@@ -16,6 +16,7 @@ def insert_sample_data():
 
     # Clear tables
     cursor.execute("DELETE FROM Donation")
+    cursor.execute("DELETE FROM Volunteer")  # Clear Volunteer records (new subtable)
     cursor.execute("DELETE FROM Business")
     cursor.execute("DELETE FROM Event")
     cursor.execute("DELETE FROM Beneficiary")
@@ -24,7 +25,7 @@ def insert_sample_data():
     # Insert Donors
     cursor.execute("INSERT INTO Donor (First_Name, Last_Name, Email, Phone_Number, Address, Date_of_Birth) VALUES ('John', 'Doe', 'john@example.com', '123456789', '123 Main St', '1980-01-01')")
     cursor.execute("INSERT INTO Donor (First_Name, Last_Name, Email, Phone_Number, Address, Date_of_Birth) VALUES ('Jane', 'Smith', 'jane@another.com', '987654321', '456 Oak Ave', '1992-03-15')")
-    cursor.execute("INSERT INTO Donor (First_Name, Last_Name, Email, Phone_Number, Address, Date_of_Birth) VALUES ('Peter', 'Jones', 'peter@third.org', '1122334455', '789 Pine Rd', '1975-11-22')")
+    cursor.execute("INSERT INTO Donor (First_Name, Last_Name, Email, Phone_Number, Address, Date_of_Birth) VALUES ('Peter', 'Jones', 'peter@third.org', '1122334455', '789 Pine Rd', '1975-11-22')")  # ✅ Corrected
     cursor.execute("INSERT INTO Donor (First_Name, Last_Name, Email, Phone_Number, Address, Date_of_Birth) VALUES ('Susan', 'Davis', 'susan@fourth.net', '9988776655', '333 Lake Rd', '1988-06-30')")
 
     # Insert Beneficiaries
@@ -44,6 +45,13 @@ def insert_sample_data():
     cursor.execute("INSERT INTO Business (Name, Email, Phone_Number, Address, Registration_Date) VALUES ('GreenEnergy', 'info@greenenergy.com', '222222222', '456 Green Street', '2023-06-10')")
     cursor.execute("INSERT INTO Business (Name, Email, Phone_Number, Address, Registration_Date) VALUES ('FoodiesHub', 'support@foodieshub.com', '333333333', '789 Food Plaza', '2022-11-15')")
     cursor.execute("INSERT INTO Business (Name, Email, Phone_Number, Address, Registration_Date) VALUES ('EduWorld', 'hello@eduworld.com', '444444444', '101 Learning Blvd', '2021-08-20')")
+
+    # Insert Volunteers
+    cursor.execute("INSERT INTO Volunteer (Event_ID, First_Name, Last_Name, Address, Date_of_Birth, Contact_Number) VALUES (1, 'Alice', 'Brown', '12 Garden St', '1995-07-20', '5551112222')")
+    cursor.execute("INSERT INTO Volunteer (Event_ID, First_Name, Last_Name, Address, Date_of_Birth, Contact_Number) VALUES (1, 'Bob', 'White', '34 River Rd', '1998-03-11', '5553334444')")
+    cursor.execute("INSERT INTO Volunteer (Event_ID, First_Name, Last_Name, Address, Date_of_Birth, Contact_Number) VALUES (2, 'Charlie', 'Green', '56 Forest Ave', '1990-05-15', '5556667777')")
+    cursor.execute("INSERT INTO Volunteer (Event_ID, First_Name, Last_Name, Address, Date_of_Birth, Contact_Number) VALUES (3, 'Diana', 'Black', '78 Lakeview', '1993-09-29', '5558889999')")
+    cursor.execute("INSERT INTO Volunteer (Event_ID, First_Name, Last_Name, Address, Date_of_Birth, Contact_Number) VALUES (4, 'Edward', 'Silver', '90 Mountain Rd', '1985-02-18', '5550001111')")
 
     # Insert Donations
     cursor.execute("INSERT INTO Donation (Amount, Date, Notes, Donor_ID, Event_ID, Business_ID, Beneficiary_ID) VALUES (500.0, '2025-11-01', 'John donates to Children Foundation', 1, NULL, NULL, 1)")

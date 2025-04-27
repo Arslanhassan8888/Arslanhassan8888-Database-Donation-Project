@@ -1,5 +1,5 @@
 # tables.py
-# Import the sqlite3 module and give it a short name 'db', this like and alias
+# Import the sqlite3 module and give it a short name 'db', this like an alias
 # It is used to communicate with the database
 import sqlite3 as db
 
@@ -20,6 +20,7 @@ def create_tables():
     cursor.executescript("""
     -- First, remove all old versions of the tables if they are there
     DROP TABLE IF EXISTS Donation;
+    DROP TABLE IF EXISTS Volunteer; -- Drop Volunteer first (new subtable linked to Event)
     DROP TABLE IF EXISTS Business;
     DROP TABLE IF EXISTS Event;
     DROP TABLE IF EXISTS Beneficiary;
@@ -28,9 +29,8 @@ def create_tables():
     /*
     Create the Donor table.
     NOT NULL constraints ensure that all fields are filled in.
-    unique constraints ensure that no two donors can have the same email or phone number.
+    Unique constraints ensure that no two donors can have the same email or phone number.
     */
-    
     CREATE TABLE Donor (
         Donor_ID INTEGER PRIMARY KEY AUTOINCREMENT,
         First_Name TEXT NOT NULL,
@@ -78,6 +78,22 @@ def create_tables():
         Phone_Number INTEGER NOT NULL UNIQUE,
         Address TEXT,
         Registration_Date TEXT NOT NULL
+    );
+
+    /*
+    Create the Volunteer table.
+    Stores volunteers linked to specific events.
+    One event can have many volunteers.
+    */
+    CREATE TABLE Volunteer (
+        Volunteer_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+        Event_ID INTEGER NOT NULL,
+        First_Name TEXT NOT NULL,
+        Last_Name TEXT NOT NULL,
+        Address TEXT,
+        Date_of_Birth TEXT,
+        Contact_Number TEXT,
+        FOREIGN KEY(Event_ID) REFERENCES Event(Event_ID) ON DELETE CASCADE
     );
 
     /*
