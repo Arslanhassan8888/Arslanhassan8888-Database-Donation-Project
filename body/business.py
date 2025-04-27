@@ -1,6 +1,7 @@
 # business.py 
 import sys
 import os
+import re
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 """
@@ -12,19 +13,63 @@ It provides a menu interface for managing business records including:
 - Deleting businesses (with donation checks)
 """
 
-import re  # For date validation
 from start.crud import view_all, add_entry, update_entry, delete_entry, linked_donations
+
+def display_businesses(businesses):
+    """Display all business records in a consistent format"""
+    if not businesses:
+        print("\033[93mNo businesses found in database.\033[0m")
+        return False
+    for i in businesses:
+        print(
+            f"\033[92mID:\033[0m {i[0]} "
+            f"\033[92mName:\033[0m {i[1]} "
+            f"\033[92mEmail:\033[0m {i[2]} "
+            f"\033[92mPhone:\033[0m {i[3]} "
+            f"\033[92mAddress:\033[0m {i[4]} "
+            f"\033[92mRegistration Date:\033[0m {i[5]}"
+        )
+    return True
+
+def business_input(action):
+    """Collect and validate business information from user"""
+    print("\n\033[93mTip: Business Name should only contain letters.\033[0m")
+    name = input(f"{action} Business Name: ").strip()
+    if not name.replace(" ", "").isalpha():
+        print("\033[91m🚫 Business name must contain only letters.\033[0m")
+        return None
+    name = name.capitalize()
+
+    print("\033[93mTip: Use a valid email address (e.g., name@business.com).\033[0m")
+    email = input(f"{action} Email: ").strip()
+    if "@" not in email or "." not in email:# Check for basic email format This is a simple check; consider using regex for more complex validation
+        print("\033[91m🚫 Please enter a valid email address.\033[0m")
+        return None
+
+    print("\033[93mTip: Phone number must be digits only.\033[0m")
+    phone = input(f"{action} Phone Number (digits only): ").strip()
+    if not phone.isdigit():
+        print("\033[91m🚫 Phone number must contain only digits.\033[0m")
+        return None
+
+    print("\033[93mTip: Address cannot be empty.\033[0m")
+    address = input(f"{action} Address: ").strip()
+
+    print("\033[93mTip: Use format YYYY-MM-DD for Date of Registration.\033[0m") 
+    reg_date = input(f"{action} Date of Registration (YYYY-MM-DD): ").strip()# Check for date format YYYY-MM-DD
+    if not re.match(r"^\d{4}-\d{2}-\d{2}$", reg_date): # Regex to check date format 
+        print("\033[91m🚫 Date must be in format YYYY-MM-DD.\033[0m")
+        return None
+
+    return (name, email, phone, address, reg_date)
 
 def business_menu():
     """
-    Displays and manages the business management menu.
-    Provides continuous interface for business operations until user exits.
-    Handles all CRUD operations for business records with proper validation.
-
+    Main business management interface
+    Handles all CRUD operations for businesses through a menu system
     """
-
     while True:
-        # Print menu options with decoration
+        # Display menu options
         print("\n" + "🎯  BUSINESS MANAGEMENT MENU  🎯".center(60))
         print("\n" + "-" * 60)
         print("1️⃣  View All Businesses")
@@ -40,140 +85,60 @@ def business_menu():
             print("\033[91m🚫 Invalid choice. Please choose a number between 1 and 5.\033[0m")
             continue
 
-        # Option 1: View all businesses
+        # View all businesses
         if choice == "1":
             try:
                 print("\n\033[92mAll Businesses:\033[0m")
                 businesses = view_all("Business")
-                if not businesses:
-                    print("\033[93mNo businesses found in database.\033[0m")
-                else:
-                    for b in businesses:
-                        print(
-                            f"\033[92mID:\033[0m {b[0]} "
-                            f"\033[92mBusiness Name:\033[0m {b[1]} "
-                            f"\033[92mEmail:\033[0m {b[2]} "
-                            f"\033[92mPhone:\033[0m {b[3]} "
-                            f"\033[92mAddress:\033[0m {b[4]} "
-                            f"\033[92mDate of Registration:\033[0m {b[5]}"
-                        )
+                display_businesses(businesses)
             except Exception as e:
                 print(f"\033[91m🚫 Error viewing businesses: {str(e)}\033[0m")
 
-        # Option 2: Add new business
+        # Add new business
         elif choice == "2":
             try:
-                print("\n\033[93mTip: Business Name should only contain letters.\033[0m\n")
-                name = input("Business Name: ").strip()
-                if not name.replace(" ", "").isalpha():
-                    print("\033[91m🚫 Business name must contain only letters.\033[0m")
-                    continue
-                name = name.capitalize()
-
-                print("\033[93mTip: Use a valid email address (e.g., name@business.com).\033[0m")
-                email = input("Email: ").strip()
-                if "@" not in email or "." not in email:  # Check if email contains '@' and '.' to validate
-                    print("\033[91m🚫 Please enter a valid email address.\033[0m")
-                    continue
-
-                print("\033[93mTip: Phone number must be digits only.\033[0m")
-                phone = input("Phone Number (digits only): ").strip() # Check if it contains only digits
-                if not phone.isdigit():
-                    print("\033[91m🚫 Phone number must contain only digits.\033[0m")
-                    continue
-
-                print("\033[93mTip: Address cannot be empty.\033[0m")
-                address = input("Address: ").strip()
-
-                print("\033[93mTip: Use format YYYY-MM-DD for Date of Registration.\033[0m")
-                registration_date = input("Date of Registration (YYYY-MM-DD): ").strip() # Validate date format  Check if date is in YYYY-MM-DD format using regex
-                if not re.match(r"^\d{4}-\d{2}-\d{2}$", registration_date): 
-                    print("\033[91m🚫 Date must be in format YYYY-MM-DD.\033[0m")
-                    continue
-
-                add_entry(
-                    "INSERT INTO Business VALUES (NULL,?,?,?,?,?)",  # Insert new business into the database
-                    (name, email, phone, address, registration_date)
-                )
-                print("\033[92m🎉 Business added successfully.\033[0m")
+                data = business_input("Add")
+                if data:
+                    add_entry(
+                        "INSERT INTO Business VALUES (NULL,?,?,?,?,?)",
+                        data
+                    )
+                    print("\033[92m🎉 Business added successfully.\033[0m")
             except Exception as e:
                 print(f"\033[91m🚫 Error adding business: {str(e)}\033[0m")
 
-        # Option 3: Update business
+        # Update existing business
         elif choice == "3":
             try:
                 print("\n\033[92mList of All Businesses:\033[0m")
                 businesses = view_all("Business")
-                if not businesses:
-                    print("\033[93mNo businesses found to update.\033[0m")
+                if not display_businesses(businesses):
                     continue
-                for b in businesses:
-                    print(
-                        f"\033[92mID:\033[0m {b[0]} "
-                        f"\033[92mBusiness Name:\033[0m {b[1]} "
-                        f"\033[92mEmail:\033[0m {b[2]} "
-                        f"\033[92mPhone:\033[0m {b[3]} "
-                        f"\033[92mAddress:\033[0m {b[4]} "
-                        f"\033[92mDate of Registration:\033[0m {b[5]}"
-                    )
 
-                print("\033[93mTip: Please enter the ID number of the business you wish to update.\033[0m")
-                business_id = input("Enter Business ID to update: ").strip()
+                business_id = input("\nEnter Business ID to update: ").strip()
                 if not business_id.isdigit():
                     print("\033[91m🚫 Business ID must be numeric.\033[0m")
                     continue
 
-                name = input("New Business Name: ").strip()
-                if not name.replace(" ", "").isalpha():
-                    print("\033[91m🚫 Business name must contain only letters.\033[0m")
-                    continue
-                name = name.capitalize()
-
-                email = input("New Email: ").strip()
-                if "@" not in email or "." not in email:
-                    print("\033[91m🚫 Please enter a valid email address.\033[0m")
-                    continue
-
-                phone = input("New Phone Number (digits only): ").strip()
-                if not phone.isdigit():
-                    print("\033[91m🚫 Phone number must contain only digits.\033[0m")
-                    continue
-
-                address = input("New Address: ").strip()
-
-                registration_date = input("New Date of Registration (YYYY-MM-DD): ").strip()
-                if not re.match(r"^\d{4}-\d{2}-\d{2}$", registration_date):
-                    print("\033[91m🚫 Date must be in format YYYY-MM-DD.\033[0m")
-                    continue
-
-                update_entry(
-                    "UPDATE Business SET Name=?, Email=?, Phone_Number=?, Address=?, Registration_Date=? WHERE Business_ID=?",
-                    (name, email, phone, address, registration_date, business_id)
-                )
-                print("\033[92m🎉 Business updated successfully.\033[0m")
+                data = business_input("New")
+                if data:
+                    update_entry(
+                        "UPDATE Business SET Name=?, Email=?, Phone_Number=?, Address=?, Registration_Date=? WHERE Business_ID=?",
+                        (*data, business_id)
+                    )
+                    print("\033[92m🎉 Business updated successfully.\033[0m")
             except Exception as e:
                 print(f"\033[91m🚫 Error updating business: {str(e)}\033[0m")
 
-        # Option 4: Delete business
+        # Delete business
         elif choice == "4":
             try:
                 print("\n\033[92mList of All Businesses:\033[0m")
                 businesses = view_all("Business")
-                if not businesses:
-                    print("\033[93mNo businesses found to delete.\033[0m")
+                if not display_businesses(businesses):
                     continue
-                for b in businesses:
-                    print(
-                        f"\033[92mID:\033[0m {b[0]} "
-                        f"\033[92mBusiness Name:\033[0m {b[1]} "
-                        f"\033[92mEmail:\033[0m {b[2]} "
-                        f"\033[92mPhone:\033[0m {b[3]} "
-                        f"\033[92mAddress:\033[0m {b[4]} "
-                        f"\033[92mDate of Registration:\033[0m {b[5]}"
-                    )
 
-                print("\033[93mTip: Please enter the ID number of the business you wish to delete.\033[0m")
-                business_id = input("Enter Business ID to delete: ").strip()
+                business_id = input("\nEnter Business ID to delete: ").strip()
                 if not business_id.isdigit():
                     print("\033[91m🚫 Business ID must be numeric.\033[0m")
                     continue
@@ -187,7 +152,7 @@ def business_menu():
             except Exception as e:
                 print(f"\033[91m🚫 Error deleting business: {str(e)}\033[0m")
 
-        # Option 5: Exit to main menu
+        # Return to main menu
         elif choice == "5":
             break
 
