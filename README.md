@@ -15,5 +15,7 @@ Clear menus, tips, and simple interface.
 IMPORTANT NOTES:
 
 Foreign keys are enforced with PRAGMA foreign_keys = ON in SQLite.
+
 Cascading deletes apply between Events and Volunteers only.
+
 Manual checks are used to prevent deletion of donors, businesses, events, or beneficiaries that still have donations linked.
