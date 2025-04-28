@@ -35,7 +35,7 @@ def main_menu():
         print("3️⃣  Business Management")
         print("4️⃣  Beneficiary Management")
         print("5️⃣  Donation Management")
-        print("6️⃣  Volunteer Management")  # ✨ New Volunteer Menu
+        print("6️⃣  Volunteer Management") 
         print("7️⃣  🔍 Search Records")
         print("8️⃣  🚪 Exit")
         print("-" * 60)
