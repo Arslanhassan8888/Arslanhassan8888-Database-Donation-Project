@@ -10,10 +10,10 @@ It provides a menu interface for managing fundraising events including:
 - Viewing all events
 - Adding new events
 - Updating existing events
-- Deleting events (with donation checks and volunteer checks)
+- Deleting events (with donation checks)
 """
 
-from start.crud import view_all, add_entry, update_entry, delete_entry, linked_donations, linked_volunteers
+from start.crud import view_all, add_entry, update_entry, delete_entry, linked_donations
 
 def display_events(events):
     """Display all event records in a consistent format"""
@@ -148,12 +148,8 @@ def event_menu():
                     print("\033[91m🚫 Cannot delete Event linked to existing Donations.\033[0m")
                     continue
 
-                if linked_volunteers(event_id):
-                    print("\033[91m🚫 Cannot delete Event linked to existing Volunteers.\033[0m")
-                    continue
-
                 delete_entry("DELETE FROM Event WHERE Event_ID=?", event_id)
-                print("\033[92m🎉 Event deleted successfully.\033[0m")
+                print("\033[92m🎉 Event deleted successfully! (Volunteers linked to this event were also automatically deleted)\033[0m")
             except Exception as e:
                 print(f"\033[91m🚫 Error deleting event: {str(e)}\033[0m")
 

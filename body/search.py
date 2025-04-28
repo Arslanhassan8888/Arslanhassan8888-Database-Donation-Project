@@ -43,7 +43,7 @@ def search_menu():
         print("6️⃣  🔙 Back to Main Menu")
         print("-" * 60)
 
-        choice = input("\n🌟 Choose an option (1-6): ").strip()
+        choice = input("\n Choose an option (1-6): ").strip()
 
         if not choice.isdigit() or choice not in ["1", "2", "3", "4", "5", "6"]:
             print("\033[91m🚫 Invalid option. Please choose a number between 1 and 6.\033[0m")
@@ -338,7 +338,9 @@ def search_menu():
 
             except Exception as e:
                 print(f"\033[91m🚫 Error searching donations by volunteer: {e}\033[0m")
-
+                
+        elif choice == "6":
+            break
 
 if __name__ == "__main__":
     search_menu()

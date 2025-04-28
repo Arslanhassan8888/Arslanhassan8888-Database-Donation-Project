@@ -96,19 +96,3 @@ def linked_donations(column, id):
     )
     return bool(result)
 
-"""
-Checks if an event has linked volunteers.
-Parameters:
-    event_id (int/str): ID of the event to check
-Returns:
-    bool: True if volunteers exist, False otherwise
-Raises:
-    sqlite3.Error: If query fails
-"""
-def linked_volunteers(event_id):
-    result = _execute_operation(
-        "SELECT 1 FROM Volunteer WHERE Event_ID = ?",
-        (event_id,),
-        fetch=True
-    )
-    return bool(result)
