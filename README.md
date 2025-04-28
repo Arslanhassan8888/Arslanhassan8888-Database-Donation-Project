@@ -3,9 +3,13 @@ CHARITY DONATION TRACKING DATABASE
 FEATURES:
 
 Manage Donors, Businesses, Beneficiaries, Events, Volunteers, and Donations.
+
 Search donations by donor, event, business, beneficiary, or volunteer.
+
 Enforce database integrity with foreign keys and cascading deletions.
+
 User-friendly error handling to avoid crashes and wrong input.
+
 Clear menus, tips, and simple interface.
 
 IMPORTANT NOTES:
