@@ -1,346 +1,156 @@
-# search.py
+# beneficiary.py  
+
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 """
-This module provides search functionality across the donation system.
-It allows users to find records based on relationships between entities:
-- Donations by donor, event, business, beneficiary, or volunteer
+This module handles all beneficiary-related operations in the donation system.
+It provides a menu interface for managing beneficiary records including:
+- Viewing all beneficiaries
+- Adding new beneficiaries
+- Updating existing beneficiaries
+- Deleting beneficiaries (with donation checks)
 """
 
-from start.tables import get_connection
+from start.crud import view_all, add_entry, update_entry, delete_entry, linked_donations
 
-# Fetch query results based on parameter
-def fetch_all(query, param):
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute(query, (param,))
-    results = cursor.fetchall()
-    conn.commit()
-    conn.close()
-    return results
+def display_beneficiaries(beneficiaries):# Display all beneficiary records in a consistent format
+    if not beneficiaries:
+        print("\033[93mNo beneficiaries found in database.\033[0m")
+        return False
+    for i in beneficiaries:
+        print(
+            f"\033[92mID:\033[0m {i[0]} "
+            f"\033[92mName:\033[0m {i[1]} "
+            f"\033[92mType:\033[0m {i[2]} "
+            f"\033[92mAddress:\033[0m {i[3]} "
+            f"\033[92mSupport Duration:\033[0m {i[4]} "
+            f"\033[92mFunding Priority:\033[0m {i[5]}"
+        )
+    return True
 
-# Helper to get Event ID from Volunteer ID
-def get_event_id_by_volunteer(volunteer_id):
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT Event_ID FROM Volunteer WHERE Volunteer_ID = ?", (volunteer_id,))
-    result = cursor.fetchone()
-    conn.close()
-    return result[0] if result else None
+def beneficiary_input(action):# Collect and validate beneficiary information from user
+    print(f"\n\033[93mTip: Name and Type should contain only letters.\033[0m")
+    name = input(f"{action} Name (letters only): ").strip()
+    if not name.replace(" ", "").isalpha():# Check if name contains only letters and spaces
+        print("\033[91m🚫 Name must contain only letters.\033[0m")
+        return None# Return None if invalid input is detected
+    name = name.capitalize() # Capitalize the first letter of the name
 
-def search_menu():
+    print("\033[93mTip: Type should also include only letters (e.g., Charity, Non-Profit).\033[0m")
+    btype = input(f"{action} Type (e.g., Charity, Non-Profit): ").strip()
+    if not btype.replace(" ", "").isalpha():
+        print("\033[91m🚫 Type must contain only letters.\033[0m")
+        return None
+
+    print("\033[93mTip: Enter the full address of the organisation.\033[0m")
+    address = input(f"{action} Address (e.g., 123 Main St, Springfield): ").strip()
+
+    duration = input(f"{action} Support Duration (e.g., 5 years): ").strip()
+
+    print("\033[93mTip: Enter High, Medium, or Low as priority.\033[0m")
+    priority = input(f"{action} Priority (High, Medium, Low): ").strip().capitalize()
+    if not priority.isalpha():
+        print("\033[91m🚫 Priority must contain only letters.\033[0m")
+        return None
+
+    return (name, btype, address, duration, priority)
+
+def beneficiary_menu():
+    """
+    Displays and manages the beneficiary management menu.
+    This is the main interface for all beneficiary operations.
+    Uses a continuous loop to keep showing the menu until user exits.
+    """
     while True:
         # Print menu options with decoration
-        print("\n" + "🔎  SEARCH MANAGEMENT MENU  🔍".center(60))
+        print("\n" + "🎯  BENEFICIARY MANAGEMENT MENU  🎯".center(60))
         print("\n" + "-" * 60)
-        print("1️⃣  Search Donations by Donor")
-        print("2️⃣  Search Donations by Event")
-        print("3️⃣  Search Donations by Business")
-        print("4️⃣  Search Donations by Beneficiary")
-        print("5️⃣  Search Donations by Volunteer")
-        print("6️⃣  🔙 Back to Main Menu")
+        print("1️⃣  View All Beneficiaries")
+        print("2️⃣  Add Beneficiary")
+        print("3️⃣  Update Beneficiary")
+        print("4️⃣  Delete Beneficiary")
+        print("5️⃣  🔙 Back to Main Menu")
         print("-" * 60)
 
-        choice = input("\n Choose an option (1-6): ").strip()
+        choice = input("\n Choose an option (1-5): ").strip()
 
-        if not choice.isdigit() or choice not in ["1", "2", "3", "4", "5", "6"]:
-            print("\033[91m🚫 Invalid option. Please choose a number between 1 and 6.\033[0m")
+        if not choice.isdigit() or choice not in ["1", "2", "3", "4", "5"]: 
+            print("\033[91m🚫 Invalid entry. Please choose an option between (1-5).\033[0m")
             continue
 
+        # Option 1: View all beneficiaries
         if choice == "1":
-            # Search Donations by Donor
             try:
-                conn = get_connection()
-                cursor = conn.cursor()
-                cursor.execute("SELECT * FROM Donor")
-                donors = cursor.fetchall()
-                conn.close()
-
-                if not donors:
-                    print("\033[93mNo donors available.\033[0m")
-                    continue
-
-                print("\n\033[92mHere are all Donors:\033[0m")
-                for i in donors:
-                    print(f"\033[92mDonor ID:\033[0m {i[0]} "
-                          f"\033[92mName:\033[0m {i[1]} {i[2]} "
-                          f"\033[92mEmail:\033[0m {i[3]} "
-                          f"\033[92mPhone:\033[0m {i[4]} "
-                          f"\033[92mAddress:\033[0m {i[5]} "
-                          f"\033[92mDOB:\033[0m {i[6]}")
-
-                print("\n\033[93mTip: Insert a Donor ID to search donations.\033[0m")
-                donor_id = input("Enter Donor ID: ").strip()
-                if not donor_id.isdigit():
-                    print("\033[91m🚫 Donor ID must be numeric.\033[0m")
-                    continue
-
-                query = """
-                SELECT Donation.Donation_ID, Donation.Amount, Donation.Date, Donation.Notes,
-                       Donor.First_Name, Donor.Last_Name, Beneficiary.Name
-                FROM Donation
-                JOIN Donor ON Donation.Donor_ID = Donor.Donor_ID
-                JOIN Beneficiary ON Donation.Beneficiary_ID = Beneficiary.Beneficiary_ID
-                WHERE Donation.Donor_ID = ?
-                """
-
-                donations = fetch_all(query, donor_id)
-
-                print("\n\033[92mDonations linked to this Donor:\033[0m")
-                if donations:
-                    for i in donations:
-                        print(
-                            f"\033[92mID:\033[0m {i[0]}, "
-                            f"\033[92mAmount:\033[0m £{i[1]:,.2f}, "
-                            f"\033[92mDate:\033[0m {i[2]}, "
-                            f"\033[92mNotes:\033[0m {i[3]}, "
-                            f"\033[92mDonor:\033[0m {i[4]} {i[5]}, "
-                            f"\033[92mBeneficiary:\033[0m {i[6]}"
-                        )
-                else:
-                    print("\033[93mNo donations found for this donor.\033[0m")
-
+                print("\n\033[92mAll Beneficiaries:\033[0m")
+                beneficiaries = view_all("Beneficiary")
+                display_beneficiaries(beneficiaries)
             except Exception as e:
-                print(f"\033[91m🚫 Error searching donations by donor: {e}\033[0m")
+                print(f"\033[91m🚫 An error occurred while viewing beneficiaries: {e}\033[0m")
 
+        # Option 2: Add new beneficiary
         elif choice == "2":
-            # Search Donations by Event
             try:
-                conn = get_connection()
-                cursor = conn.cursor()
-                cursor.execute("SELECT * FROM Event")
-                events = cursor.fetchall()
-                conn.close()
-
-                if not events:
-                    print("\033[93mNo events available.\033[0m")
-                    continue
-
-                print("\n\033[92mHere are all Events:\033[0m")
-                for i in events:
-                    print(f"\033[92mEvent ID:\033[0m {i[0]} "
-                          f"\033[92mName:\033[0m {i[1]} "
-                          f"\033[92mDate:\033[0m {i[2]} "
-                          f"\033[92mLocation:\033[0m {i[3]} "
-                          f"\033[92mGoal:\033[0m £{i[4]:,.2f} "
-                          f"\033[92mDescription:\033[0m {i[5]}")
-
-                print("\n\033[93mTip: Insert an Event ID to search donations.\033[0m")
-                event_id = input("Enter Event ID: ").strip()
-                if not event_id.isdigit():
-                    print("\033[91m🚫 Event ID must be numeric.\033[0m")
-                    continue
-
-                query = """
-                SELECT Donation.Donation_ID, Donation.Amount, Donation.Date, Donation.Notes,
-                       Event.Name, Beneficiary.Name
-                FROM Donation
-                JOIN Event ON Donation.Event_ID = Event.Event_ID
-                JOIN Beneficiary ON Donation.Beneficiary_ID = Beneficiary.Beneficiary_ID
-                WHERE Donation.Event_ID = ?
-                """
-
-                donations = fetch_all(query, event_id)
-
-                print("\n\033[92mDonations linked to this Event:\033[0m")
-                if donations:
-                    for i in donations:
-                        print(
-                            f"\033[92mID:\033[0m {i[0]}, "
-                            f"\033[92mAmount:\033[0m £{i[1]:,.2f}, "
-                            f"\033[92mDate:\033[0m {i[2]}, "
-                            f"\033[92mNotes:\033[0m {i[3]}, "
-                            f"\033[92mEvent:\033[0m {i[4]}, "
-                            f"\033[92mBeneficiary:\033[0m {i[5]}"
-                        )
-                else:
-                    print("\033[93mNo donations found for this event.\033[0m")
-
+                data = beneficiary_input("Add") # Collect beneficiary data from user
+                if data: # Check if data is valid
+                            # Insert new beneficiary into the database
+                    add_entry(
+                        "INSERT INTO Beneficiary VALUES (NULL,?,?,?,?,?)",
+                        data
+                    )
+                    print("\033[92m🎉 Beneficiary added successfully.\033[0m")
             except Exception as e:
-                print(f"\033[91m🚫 Error searching donations by event: {e}\033[0m")
+                print(f"\033[91m🚫 An error occurred while adding the beneficiary: {e}\033[0m")
 
+        # Option 3: Update existing beneficiary
         elif choice == "3":
-            # Search Donations by Business
             try:
-                conn = get_connection()
-                cursor = conn.cursor()
-                cursor.execute("SELECT * FROM Business")
-                businesses = cursor.fetchall()
-                conn.close()
-
-                if not businesses:
-                    print("\033[93mNo businesses available.\033[0m")
+                print("\n\033[92mAll Beneficiaries:\033[0m")
+                beneficiaries = view_all("Beneficiary")# Display all beneficiaries
+                if not display_beneficiaries(beneficiaries):# If no beneficiaries are found, exit the loop
                     continue
 
-                print("\n\033[92mHere are all Businesses:\033[0m")
-                for i in businesses:
-                    print(f"\033[92mBusiness ID:\033[0m {i[0]} "
-                          f"\033[92mName:\033[0m {i[1]} "
-                          f"\033[92mEmail:\033[0m {i[2]} "
-                          f"\033[92mPhone:\033[0m {i[3]} "
-                          f"\033[92mAddress:\033[0m {i[4]} "
-                          f"\033[92mRegistration Date:\033[0m {i[5]}")
-
-                print("\n\033[93mTip: Insert a Business ID to search donations.\033[0m")
-                business_id = input("Enter Business ID: ").strip()
-                if not business_id.isdigit():
-                    print("\033[91m🚫 Business ID must be numeric.\033[0m")
+                bid = input("\nEnter Beneficiary ID to update: ").strip()
+                if not bid.isdigit():
+                    print("\033[91m🚫 Beneficiary ID must be a number.\033[0m")
                     continue
 
-                query = """
-                SELECT Donation.Donation_ID, Donation.Amount, Donation.Date, Donation.Notes,
-                       Business.Name, Beneficiary.Name
-                FROM Donation
-                JOIN Business ON Donation.Business_ID = Business.Business_ID
-                JOIN Beneficiary ON Donation.Beneficiary_ID = Beneficiary.Beneficiary_ID
-                WHERE Donation.Business_ID = ?
-                """
-
-                donations = fetch_all(query, business_id)
-
-                print("\n\033[92mDonations linked to this Business:\033[0m")
-                if donations:
-                    for i in donations:
-                        print(
-                            f"\033[92mID:\033[0m {i[0]}, "
-                            f"\033[92mAmount:\033[0m £{i[1]:,.2f}, "
-                            f"\033[92mDate:\033[0m {i[2]}, "
-                            f"\033[92mNotes:\033[0m {i[3]}, "
-                            f"\033[92mBusiness:\033[0m {i[4]}, "
-                            f"\033[92mBeneficiary:\033[0m {i[5]}"
-                        )
-                else:
-                    print("\033[93mNo donations found for this business.\033[0m")
-
+                data = beneficiary_input("New")
+                if data:
+                    update_entry(
+                        "UPDATE Beneficiary SET Name=?, Type=?, Address=?, Support_Duration=?, Funding_priority=? WHERE Beneficiary_ID=?",
+                        (*data, bid)
+                    )
+                    print("\033[92m🎉 Beneficiary updated successfully.\033[0m")
             except Exception as e:
-                print(f"\033[91m🚫 Error searching donations by business: {e}\033[0m")
+                print(f"\033[91m🚫 An error occurred while updating the beneficiary: {e}\033[0m")
 
+        # Option 4: Delete a beneficiary
         elif choice == "4":
-            # Search Donations by Beneficiary
             try:
-                conn = get_connection()
-                cursor = conn.cursor()
-                cursor.execute("SELECT * FROM Beneficiary")
-                beneficiaries = cursor.fetchall()
-                conn.close()
+                print("\n\033[92mAll Beneficiaries:\033[0m")
+                beneficiaries = view_all("Beneficiary")
+                if not display_beneficiaries(beneficiaries):# If no beneficiaries are found, exit the loop
+                    continue 
 
-                if not beneficiaries:
-                    print("\033[93mNo beneficiaries available.\033[0m")
-                    continue
-
-                print("\n\033[92mHere are all Beneficiaries:\033[0m")
-                for i in beneficiaries:
-                    print(f"\033[92mBeneficiary ID:\033[0m {i[0]} "
-                          f"\033[92mName:\033[0m {i[1]} "
-                          f"\033[92mType:\033[0m {i[2]} "
-                          f"\033[92mAddress:\033[0m {i[3]} "
-                          f"\033[92mSupport Duration:\033[0m {i[4]} "
-                          f"\033[92mFunding Priority:\033[0m {i[5]}")
-
-                print("\n\033[93mTip: Insert a Beneficiary ID to search donations.\033[0m")
-                beneficiary_id = input("Enter Beneficiary ID: ").strip()
-                if not beneficiary_id.isdigit():
+                bid = input("\nEnter Beneficiary ID to delete: ").strip()# Check if the ID is numeric
+                if not bid.isdigit():
                     print("\033[91m🚫 Beneficiary ID must be numeric.\033[0m")
                     continue
 
-                query = """
-                SELECT Donation.Donation_ID, Donation.Amount, Donation.Date, Donation.Notes,
-                       Beneficiary.Name
-                FROM Donation
-                JOIN Beneficiary ON Donation.Beneficiary_ID = Beneficiary.Beneficiary_ID
-                WHERE Donation.Beneficiary_ID = ?
-                """
+                if linked_donations("Beneficiary_ID", bid): # Check if the beneficiary is linked to any donations
+                    print("\033[91m🚫 Cannot delete Beneficiary linked to existing Donations.\033[0m")
+                    continue # If linked, skip deletion 
 
-                donations = fetch_all(query, beneficiary_id)
-
-                print("\n\033[92mDonations linked to this Beneficiary:\033[0m")
-                if donations:
-                    for i in donations:
-                        print(
-                            f"\033[92mID:\033[0m {i[0]}, "
-                            f"\033[92mAmount:\033[0m £{i[1]:,.2f}, "
-                            f"\033[92mDate:\033[0m {i[2]}, "
-                            f"\033[92mNotes:\033[0m {i[3]}, "
-                            f"\033[92mBeneficiary:\033[0m {i[4]}"
-                        )
-                else:
-                    print("\033[93mNo donations found for this beneficiary.\033[0m")
-
+                delete_entry("DELETE FROM Beneficiary WHERE Beneficiary_ID=?", bid)# Delete the beneficiary from the database
+                print("\033[92m🎉 Beneficiary deleted successfully.\033[0m")
             except Exception as e:
-                print(f"\033[91m🚫 Error searching donations by beneficiary: {e}\033[0m")
+                print(f"\033[91m🚫 An error occurred while deleting the beneficiary: {e}\033[0m")
 
+        # Option 5: Return to main menu
         elif choice == "5":
-            # Search Donations by Volunteer
-            try:
-                conn = get_connection()
-                cursor = conn.cursor()
-                cursor.execute("""
-                    SELECT Volunteer.Volunteer_ID, Volunteer.First_Name, Volunteer.Last_Name,
-                           Volunteer.Address, Volunteer.Date_of_Birth, Volunteer.Contact_Number,
-                           Event.Event_ID, Event.Name
-                    FROM Volunteer
-                    JOIN Event ON Volunteer.Event_ID = Event.Event_ID
-                """)
-                volunteers = cursor.fetchall()
-                conn.close()
-
-                if not volunteers:
-                    print("\033[93mNo volunteers available.\033[0m")
-                    continue
-
-                print("\n\033[92mHere are all Volunteers:\033[0m")
-                for i in volunteers:
-                    print(f"\033[92mVolunteer ID:\033[0m {i[0]} "
-                          f"\033[92mName:\033[0m {i[1]} {i[2]} "
-                          f"\033[92mAddress:\033[0m {i[3]} "
-                          f"\033[92mDOB:\033[0m {i[4]} "
-                          f"\033[92mContact:\033[0m {i[5]} "
-                          f"\033[92mEvent ID:\033[0m {i[6]} "
-                          f"\033[92mEvent Name:\033[0m {i[7]}")
-
-                print("\n\033[93mTip: Insert a Volunteer ID to search donations based on their event.\033[0m")
-                volunteer_id = input("Enter Volunteer ID: ").strip()
-                if not volunteer_id.isdigit():
-                    print("\033[91m🚫 Volunteer ID must be numeric.\033[0m")
-                    continue
-
-                event_id = get_event_id_by_volunteer(volunteer_id)
-                if not event_id:
-                    print("\033[93mNo event found linked to this Volunteer.\033[0m")
-                    continue
-
-                query = """
-                SELECT Donation.Donation_ID, Donation.Amount, Donation.Date, Donation.Notes,
-                       Event.Name, Beneficiary.Name
-                FROM Donation
-                JOIN Event ON Donation.Event_ID = Event.Event_ID
-                JOIN Beneficiary ON Donation.Beneficiary_ID = Beneficiary.Beneficiary_ID
-                WHERE Donation.Event_ID = ?
-                """
-
-                donations = fetch_all(query, event_id)
-
-                print("\n\033[92mDonations linked to the Event where this Volunteer worked:\033[0m")
-                if donations:
-                    for i in donations:
-                        print(
-                            f"\033[92mID:\033[0m {i[0]}, "
-                            f"\033[92mAmount:\033[0m £{i[1]:,.2f}, "
-                            f"\033[92mDate:\033[0m {i[2]}, "
-                            f"\033[92mNotes:\033[0m {i[3]}, "
-                            f"\033[92mEvent:\033[0m {i[4]}, "
-                            f"\033[92mBeneficiary:\033[0m {i[5]}"
-                        )
-                else:
-                    print("\033[93mNo donations found linked to this volunteer's event.\033[0m")
-
-            except Exception as e:
-                print(f"\033[91m🚫 Error searching donations by volunteer: {e}\033[0m")
-                
-        elif choice == "6":
             break
 
 if __name__ == "__main__":
-    search_menu()
+    beneficiary_menu()
